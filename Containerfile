@@ -1,8 +1,14 @@
-# FROM ghcr.io/ublue-os/silverblue-main:latest
+ARG SOURCE_IMAGE="bazzite"
 
-## Other possible base images include:
-# FROM ghcr.io/ublue-os/bazzite:stable
+ARG SOURCE_SUFFIX="-dx"
+
+ARG SOURCE_TAG="41"
+
+### 2. SOURCE IMAGE
+
+FROM ghcr.io/ublue-os/${SOURCE_IMAGE}${SOURCE_SUFFIX}:${SOURCE_TAG}
 FROM ghcr.io/ublue-os/bluefin-nvidia:stable
+
 # 
 # ... and so on, here are more base images
 # Universal Blue Images: https://github.com/orgs/ublue-os/packages
@@ -15,10 +21,8 @@ FROM ghcr.io/ublue-os/bluefin-nvidia:stable
 
 ## Add System76(io) DKMS
 
-COPY --from=ghcr.io/ublue-os/akmods:main-41 /rpms/ /tmp/rpms
 COPY --from=ghcr.io/ublue-os/akmods-extra:main-41 /rpms/ /tmp/rpms
 RUN find /tmp/rpms
-RUN rpm-ostree install /tmp/rpms/ublue-os/ublue-os-akmods*.rpm
 RUN rpm-ostree install /tmp/rpms/kmods/kmod-system76*.rpm
 RUN rpm-ostree install /tmp/rpms/kmods/kmod-system76-io*.rpm
 
