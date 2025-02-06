@@ -13,6 +13,20 @@ FROM ghcr.io/ublue-os/silverblue-main:latest
 ## make modifications desired in your image and install packages by modifying the build.sh script
 ## the following RUN directive does all the things required to run "build.sh" as recommended.
 
+## Add System76(io) DKMS
+
+COPY --from=ghcr.io/ublue-os/akmods-extra:main-41 /rpms/ /tmp/rpms
+RUN find /tmp/rpms
+RUN rpm-ostree install /tmp/rpms/kmods/kmod-system76*.rpm
+RUN rpm-ostree install /tmp/rpms/kmods/kmod-system76-io*.rpm
+
+## Add NVIDIA
+
+COPY --from=ghcr.io/ublue-os/akmods-nvidia:TAG /rpms/ /tmp/rpms
+RUN find /tmp/rpms
+RUN rpm-ostree install /tmp/rpms/ublue-os/ublue-os-nvidia*.rpm
+RUN rpm-ostree install /tmp/rpms/kmods/kmod-nvidia*.rpm
+
 COPY build.sh /tmp/build.sh
 
 RUN mkdir -p /var/lib/alternatives && \
